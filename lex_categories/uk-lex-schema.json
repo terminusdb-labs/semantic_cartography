@@ -1,0 +1,16 @@
+[
+  { "@type" : "@context",
+    "@base" : "iri:///uk-lex/i/",
+    "@schema" : "iri:///uk-lex/s#"
+  },
+  { "@type" : "Class",
+    "@id" : "Record",
+    "@key" : { "@type" : "Lexical", "@fields" : ["id"] },
+    "id" : "xsd:string",
+    "year" : "xsd:gYear",
+    "labels" : {"@type" : "Set", "@class" : "xsd:string" },
+    "title" : "xsd:string",
+    "body" : "xsd:string",
+    "data_type" : "xsd:string"
+  }
+]
