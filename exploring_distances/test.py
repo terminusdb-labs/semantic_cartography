@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import os
 load_dotenv()
+import sys
 
 OPENAI_KEY = os.environ.get("OPENAI_KEY")
 client = OpenAI(
@@ -9,7 +10,7 @@ client = OpenAI(
     api_key=OPENAI_KEY,
 )
 
-def get_embeddings(texts, model="text-embedding-ada-002"):
+def get_embeddings(texts, model="text-embedding-3-small"): # text-embedding-ada-002"):
    texts = [text.replace("\n", " ") for text in texts]
    response = client.embeddings.create(input=texts, model=model)
    embeddings = [e.embedding for e in response.data]
@@ -19,7 +20,7 @@ def dot(v1,v2):
     return sum([x*y for x,y in zip(v1,v2)])
 
 def distance(v1,v2):
-   return 1-dot(v1,v2)
+   return (dot(v1,v2)-1.0) / -2.0
 
 def compare_phones_1():
     """ Least significant digit """
@@ -435,8 +436,112 @@ def compare_names_10():
     dist = distance(dv1, dv2)
     print(f"dist {dist}")
 
+def compare_names_11():
+    """  """
+    name1 = 'A person named Sasha'
+    name2 = 'A person named Alexander'
+    print(f"Name dist for {name1} and {name2}")
+    [dv1, dv2] = get_embeddings([name1, name2])
+    dist = distance(dv1, dv2)
+    print(f"dist {dist}")
+
+def compare_names_12():
+    """  """
+    name1 = 'A person named Albert'
+    name2 = 'A person named Alexander'
+    print(f"Name dist for {name1} and {name2}")
+    [dv1, dv2] = get_embeddings([name1, name2])
+    print(dv1)
+    dist = distance(dv1, dv2)
+    print(f"dist {dist}")
+
+def overlap():
+    """  """
+    record1 = 'There is a person named Jim. He lives at 33 Elm Street. He is 33 years old.'
+    record2 = 'There is a person named Jim.'
+    record3 = 'He lives at 33 Elm Street. He is 33 years old.'
+    print(f"Overlap distance")
+    [dv1, dv2, dv3] = get_embeddings([record1, record2, record3])
+    dist1_2 = distance(dv1, dv2)
+    dist1_3 = distance(dv1, dv3)
+    dist2_3 = distance(dv2, dv3)
+    print(f"dist 1,2 {dist1_2}")
+    print(f"dist 1,3 {dist1_3}")
+    print(f"dist 2,3 {dist2_3}")
+
+def anchorage_accounting():
+   record1 = 'Anchorage'
+   record2 = 'Accounting'
+   [dv1, dv2] = get_embeddings([record1, record2])
+   dist = distance(dv1, dv2)
+   print(f"dist {record1} {record2} = {dist}")
+
+def anchorage_alaska():
+   record1 = 'Anchorage'
+   record2 = 'Alaska'
+   [dv1, dv2] = get_embeddings([record1, record2])
+   dist = distance(dv1, dv2)
+   print(f"dist {record1} {record2} = {dist}")
+
+def albany_new_york():
+   record1 = 'Albany'
+   record2 = 'New York'
+   [dv1, dv2] = get_embeddings([record1, record2])
+   dist = distance(dv1, dv2)
+   print(f"dist {record1} {record2} = {dist}")
+
+def albany_new_york():
+   record1 = 'Albany'
+   record2 = 'New York'
+   [dv1, dv2] = get_embeddings([record1, record2])
+   dist = distance(dv1, dv2)
+   print(f"dist {record1} {record2} = {dist}")
+
+def sciedam_new_york():
+   record1 = 'Schiedam'
+   record2 = 'New York'
+   [dv1, dv2] = get_embeddings([record1, record2])
+   dist = distance(dv1, dv2)
+   print(f"dist {record1} {record2} = {dist}")
+
+def sciedam_netherlands():
+   record1 = 'Schiedam'
+   record2 = 'Netherlands'
+   [dv1, dv2] = get_embeddings([record1, record2])
+   dist = distance(dv1, dv2)
+   print(f"dist {record1} {record2} = {dist}")
+
+
+def sciedam_netherlands_truth():
+   record1 = 'Is Schiedam in the Netherlands'
+   record2 = 'Is Schiedam in the Netherlands? No.'
+   record3 = 'Is Schiedam in the Netherlands? Yes.'
+   [dv1, dv2, dv3] = get_embeddings([record1, record2, record3])
+   dist1_2 = distance(dv1, dv2)
+   dist1_3 = distance(dv1, dv3)
+   print(f"dist 1 2 {record1} {record2} = {dist1_2}")
+   print(f"dist 1 3 {record1} {record3} = {dist1_3}")
+
+def sciedam_netherlands_truth():
+   record1 = 'Is Schiedam in New York?'
+   record2 = 'Is Schiedam in New York? No.'
+   record3 = 'Is Schiedam in New York? Yes.'
+   [dv1, dv2, dv3] = get_embeddings([record1, record2, record3])
+   dist1_2 = distance(dv1, dv2)
+   dist1_3 = distance(dv1, dv3)
+   print(f"dist 1 2 {record1} {record2} = {dist1_2}")
+   print(f"dist 1 3 {record1} {record3} = {dist1_3}")
 
 if __name__ == "__main__":
+   sciedam_netherlands_truth()
+   sys.exit(0)
+   anchorage_alaska()
+   anchorage_accounting()
+   albany_new_york()
+   sciedam_new_york()
+   sciedam_netherlands()
+   sys.exit(0)
+   """
     compare_phones_1()
     compare_phones_2()
     compare_phones_3()
@@ -461,3 +566,7 @@ if __name__ == "__main__":
     compare_names_8()
     compare_names_9()
     compare_names_10()
+    compare_names_11()
+    compare_names_12()
+   """
+   overlap()
